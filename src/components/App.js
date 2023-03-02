@@ -1,41 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { v4 as uuid } from "uuid";
+import React from 'react';
 import './App.css';
 import Header from "./header";
-import DrugList from './drugList';
 import DropdownAnimalSearchQuery from './animalList';
-import { Button, Grid, GridColumn } from 'semantic-ui-react';
-
+import { Button, Grid } from 'semantic-ui-react';
 
 function App() {
-  const LOCAL_STORAGE_KEY = "drugs";
-  const [drugs, setDrugs] = useState(
-    JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? []
-  );
-
-  const addDrugHandler = (drug) => {
-    console.log(drug);
-    setDrugs([...drugs, { id: uuid(), ...drug }]);
-  };
-
-  const removeDrugHandler = (id) => {
-    const newDrugList = drugs.filter((drug) => {
-      return drug.id !== id;
-    });
-
-    setDrugs(newDrugList);
-  };
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(drugs));
-  }, [drugs]);
-
+  
   return (
     <div className="ui container">
       <Header></Header>
+      <br/>
+      <h3 align='center'> Which Animal Would You Like to See?</h3>
       <DropdownAnimalSearchQuery>  </DropdownAnimalSearchQuery>
       <br/><br/><br/>
-      <Grid>
+      {/* Created buttons for each animal since the dropdown isn't working yet. */}
+      {/* <Grid>
         <Grid.Column textAlign="center">
           <Button basic color='violet' href='/drugs/cat'>Cat</Button>
           <Button basic color='violet' href='/drugs/camelid'>Camelid</Button>
@@ -46,7 +25,7 @@ function App() {
           <Button basic color='violet' href='/drugs/swine'>Swine</Button>
           <Button basic color='violet' href='/drugs'>All</Button>
         </Grid.Column>
-      </Grid>
+      </Grid> */}
     </div>
   );
 };

@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from "uuid";
 import './App.css';
 import Header from "./header";
-//import DropdownAnimalSearchQuery from "./animalList";
 import AddDrug from "./addDrug";
 import DrugList from "./drugList";
 import { useParams } from 'react-router-dom';
-import { textTransform } from '@mui/system';
 import { Button } from 'semantic-ui-react';
 
 function DrugTable() {
@@ -16,7 +14,8 @@ function DrugTable() {
     JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? []
   );
 
-  let animalDrugs=drugs.filter(d=>d.animal.toLowerCase()===animal);
+  let animalDrugs=drugs.filter(d=>d.animal.toLowerCase()===animal.toLowerCase());
+  console.log(animal)
   console.log(animalDrugs);
   console.log(drugs);
 
@@ -42,7 +41,7 @@ function DrugTable() {
       <Header></Header>
       <Button href="javascript: history.go(-1)">Back</Button>
       <h1>{animal}</h1>
-      <AddDrug addDrugHandler={addDrugHandler}> </AddDrug>
+      <AddDrug animal={animal} addDrugHandler={addDrugHandler}> </AddDrug>
       <DrugList drugs={animalDrugs} deleteDrugHandler={removeDrugHandler}></DrugList>
     </div>
   );

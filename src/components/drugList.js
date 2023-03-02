@@ -20,8 +20,12 @@ const DrugList = (props) => {
             <Table.Row>
                 <Table.HeaderCell width={1}>Animal</Table.HeaderCell>
                 <Table.HeaderCell width={2}>Drug</Table.HeaderCell>
+                <Table.HeaderCell width={1} textAlign='left'>Method</Table.HeaderCell>
                 <Table.HeaderCell width={1} textAlign='left'>Concentration</Table.HeaderCell>
-                <Table.HeaderCell width={1} textAlign='left'>Dosage</Table.HeaderCell>
+                <Table.HeaderCell width={1} textAlign='left'>Concentration Unit</Table.HeaderCell>
+                <Table.HeaderCell width={1} textAlign='left'>Dosage Low</Table.HeaderCell>
+                <Table.HeaderCell width={1} textAlign='left'>Dosage High</Table.HeaderCell>
+                <Table.HeaderCell width={1} textAlign='left'>Dosage Unit</Table.HeaderCell>
                 <Table.HeaderCell>Notes</Table.HeaderCell>
                 <Table.HeaderCell width={1} textAlign='right'>Edit</Table.HeaderCell>
                 <Table.HeaderCell width={1} textAlign='right'>Remove</Table.HeaderCell>

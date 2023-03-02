@@ -12,8 +12,13 @@ const animalOptions = _.map(animals, (animal, index) => ({
 export default class DropdownAnimalSearchQuery extends Component {
   state = { searchQuery: '' }
 
-  handleChange = (e, { searchQuery, value }) =>
+  handleChange = (e, { searchQuery, value }) =>{
+    if (value === 'Goat/Sheep') {
+      value = 'goat_sheep'
+    }
+    window.location.href = `/drugs/${value}`
     this.setState({ searchQuery, value })
+  }   
 
   handleSearchChange = (e, { searchQuery }) => this.setState({ searchQuery })
 
@@ -21,6 +26,7 @@ export default class DropdownAnimalSearchQuery extends Component {
     const { searchQuery, value } = this.state
 
     return (
+      
       <Dropdown
         fluid
         onChange={this.handleChange}
@@ -31,7 +37,6 @@ export default class DropdownAnimalSearchQuery extends Component {
         searchQuery={searchQuery}
         selection
         value={value}
-        //href='./drugs/'
       />
     )
   }

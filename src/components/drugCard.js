@@ -1,9 +1,8 @@
 import React from "react";
-//import user from "../images/user.png";
 import { Table } from "semantic-ui-react";
 
 const DrugCard = (props) => {
-    const { id, animal, name, concentration, dosage, notes } = props.drug;
+    const { id, animal, name, method, concentration, concentrationUnit, doseLow, doseHigh, doseUnit, notes } = props.drug;
     return (
         <Table.Row>
             <Table.Cell textAlign='center'>
@@ -14,10 +13,22 @@ const DrugCard = (props) => {
                     <div>{name}</div>
                 </Table.Cell>
                 <Table.Cell>
+                    <div>{method}</div>
+                </Table.Cell>
+                <Table.Cell>
                     <div>{concentration}</div>
                 </Table.Cell>
                 <Table.Cell>
-                    <div>{dosage}</div>
+                    <div>{concentrationUnit}</div>
+                </Table.Cell>
+                <Table.Cell>
+                    <div>{doseLow}</div>
+                </Table.Cell>
+                <Table.Cell>
+                    <div>{doseHigh}</div>
+                </Table.Cell>
+                <Table.Cell>
+                    <div>{doseUnit}</div>
                 </Table.Cell>
                 <Table.Cell>
                     <div> {notes} </div>

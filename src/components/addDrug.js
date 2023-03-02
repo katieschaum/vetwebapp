@@ -1,19 +1,21 @@
 import React from "react";
-import DropdownAnimalSearchQuery from "./animalList";
-import DosageType from "./dosageType";
-import InputConcentration from "./inputConcentration";
-import DosageUnit from "./inputDosage";
-import InputDosage from "./inputDosage";
-import unitOptions from "./inputDosage"
+import DosageMethod from "./dosageMethod";
+import ConcentrationUnit from "./ConcentrationUnit";
+import { Form, Input, Dropdown, Button, TextArea, Header, Icon } from "semantic-ui-react";
+
 
 class addDrug extends React.Component {
     state = {
-        // animal: "",
         name: "",
+        method: "",
         concentration: "",
-        dosage: "",
+        concentrationUnit: "",
+        doseLow: "",
+        doseHigh: "",
+        dosageUnit: "",
         notes: ""
     };
+    setState=this.setState.bind(this)
 
     add = (e) => {
         e.preventDefault();
@@ -22,22 +24,24 @@ class addDrug extends React.Component {
             return;
         }
         this.props.addDrugHandler(this.state);
-        this.setState({ name: "", concentration: "", dosage: "", notes: "" });
+        this.setState({ name: "", method: "", concentration: "", concentrationUnit: "", doseLow: "", doseHigh: "", dosageUnit: "", notes: "" });
     };
     render() {
         return (
             <div className="ui main">
                 <h2> Add Drug</h2>
                 <form className="ui form" onSubmit={this.add}>
-                <label></label>
-                    {/* <DropdownAnimalSearchQuery>
-                        <input
-                        name = "animal"
-                        value={this.state.animal}
-                        onChange={(e) => this.setState({ animal: e.target.value })}>       
-                        </input>   
-                    </DropdownAnimalSearchQuery> */}
-                    <div className="field">
+                <Form.Group width="equal">
+                    <Form.Field
+                    control={Input}
+                    name="name"
+                    label="Drug Name"
+                    style= {{width: "925px"}}
+                    placeholder="Drug Name"
+                    value={this.state.name}
+                    onChange={(e) => this.setState({ name: e.target.value })}
+                    />
+                    {/* <div className="field">
                         <label>Drug</label>
                         <input 
                         type="text" 
@@ -46,44 +50,103 @@ class addDrug extends React.Component {
                         value={this.state.name}
                         onChange={(e) => this.setState({ name: e.target.value })}>
                         </input>
-                    </div>
-                    <div className="field">
-                        <label>Concentration</label>
-                        {/* <InputConcentration> */}
-                        <input 
+                    </div> */}
+                    {/* <Form.Field>
+                    <DosageMethod/>
+                    </Form.Field> */}
+                    <Form.Field
+                        control={Input}
+                        name="method"
+                        label="Method"
+                        placeholder="Method"
+                        className="right aligned"
+                        value={this.state.method}
+                        onChange={(e) => this.setState({ method: e.target.value })}
+                    />
+                    </Form.Group>
+                     {/* <div className="field">
+                        <label>Method</label> */}
+                        {/* <DosageMethod method={this.state.method} value={this.state.method} onChange={this.setState}></DosageMethod> */}
+                        {/* <input 
+                        style={{width: 100, height: 35}}
                         type="text" 
-                        name="concentration" 
+                        name="method" 
+                        placeholder="Method"
+                        value={this.state.method}
+                        onChange={(e) => this.setState({ method: e.target.value })}>
+                        </input>
+                    </div>   */}
+                    
+                    <Form.Group>
+                    <Form.Field
+                        
+                        control={Input}
+                        name="concentration"
+                        label="Concentration"
+                        style={{width: 125}}
                         placeholder="Concentration"
                         value={this.state.concentration}
-                        onChange={(e) => this.setState({ concentration: e.target.value })}>
-                        </input>
-                        {/* </InputConcentration> */}
-                    </div>
-                    <div className="field">
-                        <label>Dosage</label>
-                        {/* <DosageUnit> */}
-                        <input 
-                        type="text" 
-                        name="dosage" 
-                        placeholder="Dosage"
-                        value={this.state.dosage}
-                        onChange={(e) => this.setState({ dosage: e.target.value })}>
-                        </input>
-                        {/* </DosageUnit> */}
+                        onChange={(e) => this.setState({ concentration: e.target.value })}
+                    />
+                    
+                    <Form.Field
+                        control={Input}
+                        options={[
+                                      { key: 'mg/kg', text: 'mg/kg', value: 'mg/kg' },
+                                      { key: 'µg/kg', text: 'µg/kg', value: 'µg/kg' },
+                                      { key: 'ml/kg', text: 'ml/kg', value: 'ml/kg' },
+                                    ]}
+                        name="concentrationUnit"
+                        label="Concentration Unit"
+                        placeholder="mg/kg"
+                        value={this.state.options}
+                        onChange={(e) => this.setState({ concentrationUnit: e.target.value })}
                         
-                        
-                    </div>
-                    <div className="field">
-                        <label>Notes</label>
-                        <input 
-                        type="text" 
-                        name="notes" 
+                    />
+                    </Form.Group>
+                    <Form.Group>
+                    <Form.Field
+                        control={Input}
+                        style={{width: 125}}
+                        name="doseLow"
+                        label="Dosage Range"
+                        placeholder="Dosage Low"
+                        value={this.state.doseLow}
+                        onChange={(e) => this.setState({ doseLow: e.target.value })}
+                    />
+                    <Form.Field>to</Form.Field>
+                    
+                    
+                    <Form.Field
+                        control={Input} 
+                        style={{width: 125}} 
+                        name="doseHigh" 
+                        label="&nbsp;"
+                        placeholder="Dosage High"
+                        value={this.state.doseHigh}
+                        onChange={(e) => this.setState({ doseHigh: e.target.value })}/>
+                    
+                    <Form.Field
+                        control={Input} 
+                        name="doseUnit" 
+                        label="Dosage Unit"
+                        placeholder="Dosage Unit"
+                        value={this.state.doseUnit}
+                        onChange={(e) => this.setState({ doseUnit: e.target.value })}/>
+                    </Form.Group>
+                    
+                    <Form.Field
+                        control={Input}
+                        name="notes"
+                        label="Notes"
                         placeholder="Notes"
                         value={this.state.notes}
-                        onChange={(e) => this.setState({ notes: e.target.value })}>
-                        </input>
-                    </div>
+                        onChange={(e) => this.setState({ notes: e.target.value })}
+                    />
+                   
                     <button className="ui button blue">Add</button>
+                
+                
                 </form>
             </div>
         );
