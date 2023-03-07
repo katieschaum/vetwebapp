@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 
+// Creates the dropdown component on the homepage for the user to select which animal to view.
 const animals = ["", "Camelid", "Cat", "Cattle", "Dog", "Equine", "Goat/Sheep", "Swine" ];
 const animalOptions = _.map(animals, (animal, index) => ({
   key: animals[index],
@@ -26,7 +27,6 @@ export default class DropdownAnimalSearchQuery extends Component {
     const { searchQuery, value } = this.state
 
     return (
-      
       <Dropdown
         fluid
         onChange={this.handleChange}

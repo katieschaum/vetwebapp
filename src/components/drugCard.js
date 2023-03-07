@@ -1,14 +1,12 @@
 import React from "react";
 import { Table } from "semantic-ui-react";
+import EditDrugModal from "./Modal";
 
+// Creates the table with the drug information
 const DrugCard = (props) => {
-    const { id, animal, name, method, concentration, concentrationUnit, doseLow, doseHigh, doseUnit, notes } = props.drug;
+    const { id, name, method, concentration, concentrationUnit, doseLow, doseHigh, doseUnit, notes } = props.drug;
     return (
         <Table.Row>
-            <Table.Cell textAlign='center'>
-            
-            <div className="header">{animal}</div>
-            </Table.Cell>
                 <Table.Cell>
                     <div>{name}</div>
                 </Table.Cell>
@@ -33,13 +31,11 @@ const DrugCard = (props) => {
                 <Table.Cell>
                     <div> {notes} </div>
                 </Table.Cell>
+
                 <Table.Cell>
-                <i 
-                className="edit outline icon"
-                style={{color:"blue", marginTop:"7px"}}
-                onClick={() => props.clickHandler(id)}>
-                </i>  
+                <EditDrugModal drug={props.drug} editDrug={props.editDrugHandler}/>              
                 </Table.Cell>
+                
                 <Table.Cell>
                 <i 
                 className="trash alternate outline icon"

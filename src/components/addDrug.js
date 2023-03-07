@@ -1,10 +1,10 @@
 import React from "react";
-import DosageMethod from "./dosageMethod";
-import ConcentrationUnit from "./ConcentrationUnit";
-import { Form, Input, Dropdown, Button, TextArea, Header, Icon } from "semantic-ui-react";
+import { Form, Input } from "semantic-ui-react";
+import api from "../services/api";
 
-
+// Adds a new drug to the table of a given animal
 class addDrug extends React.Component {
+
     state = {
         name: "",
         method: "",
@@ -19,12 +19,23 @@ class addDrug extends React.Component {
 
     add = (e) => {
         e.preventDefault();
+        
         if (this.state.name === "") {
             alert("Drug field is mandatory!");
             return;
         }
+        api.post('/drugs', {
+            drug_id: 'drug_id',
+            name: this.state.name
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         this.props.addDrugHandler(this.state);
-        this.setState({ name: "", method: "", concentration: "", concentrationUnit: "", doseLow: "", doseHigh: "", dosageUnit: "", notes: "" });
+        this.setState({ id: "", name: "", method: "", concentration: "", concentrationUnit: "", doseLow: "", doseHigh: "", dosageUnit: "", notes: "" });
     };
     render() {
         return (
@@ -41,19 +52,7 @@ class addDrug extends React.Component {
                     value={this.state.name}
                     onChange={(e) => this.setState({ name: e.target.value })}
                     />
-                    {/* <div className="field">
-                        <label>Drug</label>
-                        <input 
-                        type="text" 
-                        name="name" 
-                        placeholder="Drug Name"
-                        value={this.state.name}
-                        onChange={(e) => this.setState({ name: e.target.value })}>
-                        </input>
-                    </div> */}
-                    {/* <Form.Field>
-                    <DosageMethod/>
-                    </Form.Field> */}
+                    
                     <Form.Field
                         control={Input}
                         name="method"
@@ -64,19 +63,7 @@ class addDrug extends React.Component {
                         onChange={(e) => this.setState({ method: e.target.value })}
                     />
                     </Form.Group>
-                     {/* <div className="field">
-                        <label>Method</label> */}
-                        {/* <DosageMethod method={this.state.method} value={this.state.method} onChange={this.setState}></DosageMethod> */}
-                        {/* <input 
-                        style={{width: 100, height: 35}}
-                        type="text" 
-                        name="method" 
-                        placeholder="Method"
-                        value={this.state.method}
-                        onChange={(e) => this.setState({ method: e.target.value })}>
-                        </input>
-                    </div>   */}
-                    
+
                     <Form.Group>
                     <Form.Field
                         
@@ -87,8 +74,7 @@ class addDrug extends React.Component {
                         placeholder="Concentration"
                         value={this.state.concentration}
                         onChange={(e) => this.setState({ concentration: e.target.value })}
-                    />
-                    
+                    />   
                     <Form.Field
                         control={Input}
                         options={[
@@ -101,9 +87,9 @@ class addDrug extends React.Component {
                         placeholder="mg/kg"
                         value={this.state.options}
                         onChange={(e) => this.setState({ concentrationUnit: e.target.value })}
-                        
                     />
                     </Form.Group>
+
                     <Form.Group>
                     <Form.Field
                         control={Input}
@@ -115,8 +101,6 @@ class addDrug extends React.Component {
                         onChange={(e) => this.setState({ doseLow: e.target.value })}
                     />
                     <Form.Field>to</Form.Field>
-                    
-                    
                     <Form.Field
                         control={Input} 
                         style={{width: 125}} 
@@ -124,8 +108,7 @@ class addDrug extends React.Component {
                         label="&nbsp;"
                         placeholder="Dosage High"
                         value={this.state.doseHigh}
-                        onChange={(e) => this.setState({ doseHigh: e.target.value })}/>
-                    
+                        onChange={(e) => this.setState({ doseHigh: e.target.value })}/>     
                     <Form.Field
                         control={Input} 
                         name="doseUnit" 
@@ -145,8 +128,6 @@ class addDrug extends React.Component {
                     />
                    
                     <button className="ui button blue">Add</button>
-                
-                
                 </form>
             </div>
         );
