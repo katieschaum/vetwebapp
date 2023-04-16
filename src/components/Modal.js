@@ -1,10 +1,14 @@
 import React from 'react'
 import { Form, Button, Input, Modal, Dropdown } from 'semantic-ui-react'
+import api from "../services/api";
+import axios from 'axios';
+
 
 // Creates the popup element to edit a particular drug
 function EditDrugModal({drug, editDrug}) {
   const [open, setOpen] = React.useState(false)
   const [drugValues, setDrugValues] = React.useState(drug)
+
 
   function onSubmit(){
     if (drugValues.name === "") {
@@ -15,11 +19,17 @@ function EditDrugModal({drug, editDrug}) {
     setOpen(false)
   }
 
+   function handleDropdownChange(value) {
+        this.drugValues({ doseUnit: value, 
+                        concentrationUnit: value });
+      };
+
   function updateValue(input){
     let newData = Object.assign({}, drugValues, input)
     
     setDrugValues(newData)
   }
+    
   return (
     <Modal
       onClose={() => setOpen(false)}
@@ -65,18 +75,14 @@ function EditDrugModal({drug, editDrug}) {
                     />
                     <br/>
                     <Form.Field
-                        control={Input}
-                        options={[
-                                      { key: 'mg/kg', text: 'mg/kg', value: 'mg/kg' },
-                                      { key: 'µg/kg', text: 'µg/kg', value: 'µg/kg' },
-                                      { key: 'ml/kg', text: 'ml/kg', value: 'ml/kg' },
-                                    ]}
+                        control={Dropdown}
                         name="concentrationUnit"
-                        label="Concentration Unit:   "
+                        label="Concentration Unit"
                         placeholder="mg/kg"
-                        value={drugValues.concentrationUnit}
-                        onChange={(e) => updateValue({ concentrationUnit: e.target.value })}
-                        
+                        selection
+                        options={drugValues.unitOptions}
+                        value={drugValues.options}
+                        onChange={(e) => handleDropdownChange({ concentrationUnit: e.target.value })}
                     />
                     </Form.Group>
                     <br/>
@@ -101,12 +107,15 @@ function EditDrugModal({drug, editDrug}) {
                         onChange={(e) => updateValue({ doseHigh: e.target.value })}/>
                     
                     <Form.Field
-                        control={Input} 
+                        control={Dropdown} 
                         name="doseUnit" 
-                        label="Dosage Unit:   "
+                        label="Dosage Unit"
                         placeholder="Dosage Unit"
+                        selection
+                        options={drugValues.unitOptions}
                         value={drugValues.doseUnit}
-                        onChange={(e) => updateValue({ doseUnit: e.target.value })}/>
+                        onChange={(e) => handleDropdownChange({ doseUnit: e.target.value })}
+                      />
                     </Form.Group>
                     <br/>
                     <Form.Field

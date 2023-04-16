@@ -1,11 +1,11 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from "uuid";
 import './App.css';
 import Header from "./header";
 import AddDrug from "./addDrug";
 import DrugList from "./drugList";
 import { useParams } from 'react-router-dom';
-import { Button, Table } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 import VitalsCard from './vitalsList';
 
 // Main animal page with add/edit/delete handlers and data for specific animals
@@ -36,7 +36,7 @@ function DrugTable() {
   };
 
   const removeDrugHandler = (id) => {
-    if (window.confirm("Are you sure you want to delete?") == true){
+    if (window.confirm("Are you sure you want to delete?") === true){
     const newDrugList = drugs.filter((drug) => {
       return drug.id !== id;
     });
@@ -56,9 +56,9 @@ function DrugTable() {
       <h1>{animal}</h1>
       <h3>Vitals</h3>
       <VitalsCard></VitalsCard>
-      <h3>Drug List for {animal}s</h3>
+      <h3>Drug List for {animal}</h3>
       <DrugList drugs={animalDrugs} editDrugHandler={editDrugHandler} deleteDrugHandler={removeDrugHandler}></DrugList>
-      <AddDrug animal={animal} addDrugHandler={addDrugHandler}> </AddDrug>      
+      <AddDrug animal={animal} AnimalHandler={addDrugHandler}> </AddDrug>      
     </div>
   );
 };
