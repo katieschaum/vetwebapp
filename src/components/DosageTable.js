@@ -11,7 +11,7 @@ import processDosages from '../services/deref';
 import axios from 'axios';
 import api from '../services/api';
 
-const dosageUri = `https://vaddb.liamgombart.com/dosages`
+const dosageUri = `https://vaddb.liamgombart.com/deref/dosages`
 
 // Main animal page with add/edit/delete handlers and data for specific animals
 const DosageTable = () => {
@@ -51,9 +51,6 @@ const DosageTable = () => {
         dosages: newDosages,
       });
     }
-    
-   
-
   }
 
   const getDosages02 = async () => {

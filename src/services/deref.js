@@ -1,79 +1,30 @@
 import get from '../services/get';
 
-const drugUri = `https://vaddb.liamgombart.com/drugs`
-const unitUri = `https://vaddb.liamgombart.com/units`
-const methodUri = `https://vaddb.liamgombart.com/methods`
-const concentrationUri = `https://vaddb.liamgombart.com/concentrations`
-const deliveryUri = `https://vaddb.liamgombart.com/delivery`
 
+const createDosageString = (dosage) => {
 
-const derefById = async (uri, id) => {
-  const full_uri = `${uri}/${id}`;
-  const response = await get(full_uri);
-  return response;
-}
-
-const derefConcentrations = async (uri, id) => {
-  const concentrations = [];
-
-  const full_uri = `${uri}?dosage_id=${id}`
-  const response = await get(full_uri);
-  for (const concentration of response) {
-    const full_unit_uri = `${unitUri}/${concentration.unit_id}`;
-    const unit = await get(full_unit_uri);
-    const new_concentration = {
-      'value': concentration.value, 
-      'name': unit.name
-    };
-    concentrations.push(new_concentration);
-  }
-  return concentrations;
-}
-
-const derefMethods = async (uri, id) => {
-  const methods = [];
-  const full_delivery_uri = `${deliveryUri}?dosage_id=${id}`
-  const deliveries = await get(full_delivery_uri);
-
-  for (const delivery of deliveries) {
-    const full_method_uri = `${uri}/${delivery.method_id}`
-    const method = await get(full_method_uri);
-    methods.push({'name': method.name});
-  }
-  return methods;
-}
-
-const derefDosage = async (dosage) => {
-  const data = {};
-  const drug = await derefById(drugUri, dosage.drug_id);
-  const doseUnit = await derefById(unitUri,dosage.dose_unit_id);
-  const concentrations = await derefConcentrations(concentrationUri, dosage.dosage_id);
-  const methods = await derefMethods(methodUri, dosage.dosage_id);
-
-  data['drug'] = drug.name;
-  data['doseUnit'] = doseUnit.name;
-  data['concentrations'] = concentrations;
-  data['methods'] = methods;
-
-  return createDosageString(dosage, data);
-} 
-
-const createDosageString = (dosage, derefInfo) => {
+  // making id string
   const id = dosage.dosage_id;
-  const drugName = `${derefInfo.drug}`;
-  
+
+  //making drug name string
+  const drugName = `${dosage.drug.name}`;
+ 
+  // making method string
   let method = '';
-  for (const item of derefInfo.methods) {
-    method += item.name + ":"
+  for (const item of dosage.methods) {
+    method += item.name + ":\n"
   }
-  
+
+  // making concentration string  
   let concentration = '';
-  for (const pair of derefInfo.concentrations) {
-    concentration += `(${pair.value} ${pair.name}):`
+  for (const pair of dosage.concentrations) {
+    concentration += `(${pair.value} ${pair.unit.name}):\n`
   }
 
-  const dose = `${dosage.dose_low} - ${dosage.dose_high} ${derefInfo.doseUnit}`;
+  // making dose string
+  const dose = `${dosage.dose_low} - ${dosage.dose_high} ${dosage.dose_unit.name}`;
 
+  // making note string
   const notes = dosage.notes;
 
   return {
@@ -86,21 +37,20 @@ const createDosageString = (dosage, derefInfo) => {
   };
 }
 
-
-const derefDosages = async (dosages) => {
-    let deref = [];
+const stringifyDosages = (dosages) => {
+    let stringified = [];
     for (const dosage of dosages) {
-      const data = await derefDosage(dosage);
-      deref.push(data);
+      const data = createDosageString(dosage);
+      stringified.push(data);
     }
-    return deref;
+    return stringified;
   }
 
-const combineRawAndDeref = (raw, deref) => {
+const combineDerefAndStringified = (deref, stringified) => {
   let combined = [];
-  for (const rawDosage of raw) {
-    const derefDosage = deref.find(x => x.id === rawDosage.dosage_id);
-    const newDosage = {...rawDosage, deref: derefDosage};
+  for (const derefDosage of deref) {
+    const stringifiedDosage = stringified.find(x => x.id === derefDosage.dosage_id);
+    const newDosage = {...derefDosage, stringified: stringifiedDosage};
     combined.push(newDosage);
   }
 
@@ -109,9 +59,9 @@ const combineRawAndDeref = (raw, deref) => {
 
 
 const processDosages = async (uri) => {
-  const rawDosages = await get(`${uri}`);
-  const dereferenced = await derefDosages(rawDosages);
-  const combined = combineRawAndDeref(rawDosages, dereferenced);
+  const derefDosages = await get(`${uri}`);
+  const stringified = stringifyDosages(derefDosages);
+  const combined = combineDerefAndStringified(derefDosages, stringified);
 
   return combined
 }

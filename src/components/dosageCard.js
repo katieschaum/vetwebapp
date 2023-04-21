@@ -4,7 +4,7 @@ import EditDosageModal from "./Modal";
 
 // Creates the table with the dosage information
 const DosageCard = (props) => { 
-    const { id, drugName, method, concentration, dose, notes } = props.dosage.deref;
+    const { id, drugName, method, concentration, dose, notes } = props.dosage.stringified;
     return (
         <Table.Row>
                 <Table.Cell>
