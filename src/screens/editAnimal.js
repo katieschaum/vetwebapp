@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from "../services/api";
-import { Loader, Form, Header, Button, List, Icon, Modal } from 'semantic-ui-react';
-import { Col, Row, Container } from 'react-bootstrap';
+import { Loader, Form, Header, Button, List, Icon } from 'semantic-ui-react';
 
 
 
@@ -71,90 +70,72 @@ const EditAnimal = () => {
                 <Loader></Loader>
             ) : (
                 <div>
-                    {/* <Modal style={{left: '50%', transform: 'translateX(-50%)', height: '150px', marginTop: '325px'}} size='mini' open={openModal} onClose={handleCloseModal}>
-                        <Modal.Content style={{textAlign: 'center'}}>Are you sure you want to update?</Modal.Content>
-                        <Modal.Actions>
-                            <div style={{textAlign: 'center'}}>
-                            <Button positive onClick={handleSubmit}>Update</Button>
-                            <Button negative onClick={handleCloseModal}>Close</Button>
-                            </div>
-                        </Modal.Actions>
-                    </Modal> */}
-                    <Container>
-                        <Row>
-                            <Col>
-                                <Button href='/' style={{ marginTop: '40px', marginBottom: '50px' }}>Back</Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xl={6}>
-                                <Row>
-                                    <Header style={{ padding: '10px', paddingBottom: '20px' }} as={'h1'}>Edit Data:</Header>
-                                </Row>
-                                <Form onSubmit={handleSubmit} style={{ width: '100%', justifyContent: 'center', margin: 'auto', boxShadow: '2px 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '10px', borderRadius: '5px', backgroundColor: 'whitesmoke' }}>
-                                    <Header style={{ paddingTop: '10px', paddingBottom: '10px' }} as={'h2'}>{animalOptions[0].name}</Header>
-                                    <Form.Group widths='equal'>
-                                        <Form.Input name='name' label='Animal Name' defaultValue={animalOptions[0].name}></Form.Input>
-                                    </Form.Group>
-                                    <Form.Group widths='equal'>
-                                        <Form.Input name='temperature_low' label='Temperature Low:' defaultValue={animalOptions[0].temperature_low}></Form.Input>
-                                        <Form.Input name='temperature_high' label='Temperature High:' defaultValue={animalOptions[0].temperature_high}></Form.Input>
-                                    </Form.Group>
-                                    <Form.Group widths='equal'>
-                                        <Form.Input name='heart_rate_low' label='Heart Rate Low:' defaultValue={animalOptions[0].heart_rate_low}></Form.Input>
-                                        <Form.Input name='heart_rate_high' label='Heart Rate High:' defaultValue={animalOptions[0].heart_rate_high}></Form.Input>
-                                    </Form.Group>
-                                    <Form.Group widths='equal'>
-                                        <Form.Input name='respiratory_rate_low' label='Respiratory Rate Low:' defaultValue={animalOptions[0].respiratory_rate_low}></Form.Input>
-                                        <Form.Input name='respiratory_rate_high' label='Respiratory Rate High' defaultValue={animalOptions[0].respiratory_rate_high}></Form.Input>
-                                    </Form.Group>
-                                    <Form.Button style={{ marginTop: '10px', marginBottom: '10px' }} primary>Submit Changes</Form.Button>
-                                </Form>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Header style={{ padding: '10px', paddingBottom: '20px', textAlign: 'center' }} as={'h2'}>Curent Data:</Header>
-                                </Row>
-                                <List celled style={{ width: '50%', justifyContent: 'center', margin: 'auto', textAlign: 'center' }}>
-                                    <List.Item>
-                                        <Icon color='blue' name='user'></Icon>
-                                        <List.Header>Animal Name: </List.Header>
-                                        <List.Content>{animalOptions[0].name}</List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon style={{ color: '#e60000' }} name='thermometer quarter'></Icon>
-                                        <List.Header>Temperature Low</List.Header>
-                                        <List.Content>{animalOptions[0].temperature_low}</List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon style={{ color: '#990000' }} name='thermometer three quarters'></Icon>
-                                        <List.Header>Temperature High</List.Header>
-                                        <List.Content>{animalOptions[0].temperature_high}</List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon style={{ color: '#ffb3b3' }} name='heartbeat'></Icon>
-                                        <List.Header>Heart Rate Low:</List.Header>
-                                        <List.Content>{animalOptions[0].heart_rate_low}</List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon style={{ color: '#ff6666' }} name='heartbeat'></Icon>
-                                        <List.Header>Heart Rate High: </List.Header>
-                                        <List.Content>{animalOptions[0].heart_rate_high}</List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon style={{ color: '#80bfff' }} name='stethoscope'></Icon>
-                                        <List.Header>Respiratory Low:</List.Header>
-                                        <List.Content>{animalOptions[0].respiratory_rate_low}</List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon style={{ color: '#3399ff' }} name='stethoscope'></Icon>
-                                        <List.Header>Respiratory High: </List.Header>
-                                        <List.Content>{animalOptions[0].respiratory_rate_high}</List.Content>
-                                    </List.Item>
-                                </List>
-                            </Col>
-                        </Row>
-                    </Container>
+
+                    <Button href='/' style={{ marginTop: '40px', marginBottom: '50px' }}>Back</Button>
+
+                    <Header style={{ padding: '10px', paddingBottom: '20px' }} as={'h1'}>Edit Data:</Header>
+
+                    <Form onSubmit={handleSubmit} style={{ width: '100%', justifyContent: 'center', margin: 'auto', boxShadow: '2px 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '10px', borderRadius: '5px', backgroundColor: 'whitesmoke' }}>
+                        <Header style={{ paddingTop: '10px', paddingBottom: '10px' }} as={'h2'}>{animalOptions[0].name}</Header>
+                        <Form.Group widths='equal'>
+                            <Form.Input name='name' label='Animal Name' defaultValue={animalOptions[0].name}></Form.Input>
+                        </Form.Group>
+                        <Form.Group widths='equal'>
+                            <Form.Input name='temperature_low' label='Temperature Low:' defaultValue={animalOptions[0].temperature_low}></Form.Input>
+                            <Form.Input name='temperature_high' label='Temperature High:' defaultValue={animalOptions[0].temperature_high}></Form.Input>
+                        </Form.Group>
+                        <Form.Group widths='equal'>
+                            <Form.Input name='heart_rate_low' label='Heart Rate Low:' defaultValue={animalOptions[0].heart_rate_low}></Form.Input>
+                            <Form.Input name='heart_rate_high' label='Heart Rate High:' defaultValue={animalOptions[0].heart_rate_high}></Form.Input>
+                        </Form.Group>
+                        <Form.Group widths='equal'>
+                            <Form.Input name='respiratory_rate_low' label='Respiratory Rate Low:' defaultValue={animalOptions[0].respiratory_rate_low}></Form.Input>
+                            <Form.Input name='respiratory_rate_high' label='Respiratory Rate High' defaultValue={animalOptions[0].respiratory_rate_high}></Form.Input>
+                        </Form.Group>
+                        <Form.Button style={{ marginTop: '10px', marginBottom: '10px' }} primary>Submit Changes</Form.Button>
+                    </Form>
+
+
+                    <Header style={{ padding: '10px', paddingBottom: '20px', textAlign: 'center' }} as={'h2'}>Curent Data:</Header>
+
+                    <List celled style={{ width: '50%', justifyContent: 'center', margin: 'auto', textAlign: 'center' }}>
+                        <List.Item>
+                            <Icon color='blue' name='user'></Icon>
+                            <List.Header>Animal Name: </List.Header>
+                            <List.Content>{animalOptions[0].name}</List.Content>
+                        </List.Item>
+                        <List.Item>
+                            <Icon style={{ color: '#e60000' }} name='thermometer quarter'></Icon>
+                            <List.Header>Temperature Low</List.Header>
+                            <List.Content>{animalOptions[0].temperature_low}</List.Content>
+                        </List.Item>
+                        <List.Item>
+                            <Icon style={{ color: '#990000' }} name='thermometer three quarters'></Icon>
+                            <List.Header>Temperature High</List.Header>
+                            <List.Content>{animalOptions[0].temperature_high}</List.Content>
+                        </List.Item>
+                        <List.Item>
+                            <Icon style={{ color: '#ffb3b3' }} name='heartbeat'></Icon>
+                            <List.Header>Heart Rate Low:</List.Header>
+                            <List.Content>{animalOptions[0].heart_rate_low}</List.Content>
+                        </List.Item>
+                        <List.Item>
+                            <Icon style={{ color: '#ff6666' }} name='heartbeat'></Icon>
+                            <List.Header>Heart Rate High: </List.Header>
+                            <List.Content>{animalOptions[0].heart_rate_high}</List.Content>
+                        </List.Item>
+                        <List.Item>
+                            <Icon style={{ color: '#80bfff' }} name='stethoscope'></Icon>
+                            <List.Header>Respiratory Low:</List.Header>
+                            <List.Content>{animalOptions[0].respiratory_rate_low}</List.Content>
+                        </List.Item>
+                        <List.Item>
+                            <Icon style={{ color: '#3399ff' }} name='stethoscope'></Icon>
+                            <List.Header>Respiratory High: </List.Header>
+                            <List.Content>{animalOptions[0].respiratory_rate_high}</List.Content>
+                        </List.Item>
+                    </List>
+
                 </div>
             )}
         </div>

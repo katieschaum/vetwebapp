@@ -1,43 +1,71 @@
-import React, { Component } from "react";
-import { Button, Dropdown, Icon, List, Header } from "semantic-ui-react";
+import React, { useState, useEffect, useContext } from 'react'
+import { Dropdown, List, Header, Icon, Button } from 'semantic-ui-react'
+import get from '../services/get';
 import api from "../services/api";
+import { AnimalContext } from '../context/animal_context';
+import { useNavigate } from 'react-router-dom';
 import AddAnimal from './addAnimal';
 
-export default class DropdownAnimalSearchQuery extends Component {
-  state = {
+// Creates the dropdown component on the homepage for the user to select which animal to view.
+const animalUri = "https://vaddb.liamgombart.com/animals";
+
+const DropdownAnimalSearchQuery = () => {
+  const [state, setState] = useState({
+    value: '',
     searchQuery: '',
-    animalOptions: []
-  }
+    animals: [],
+    options: [],
+  });
 
-  // Get animal information
-  componentDidMount() {
-    api.get('/animals')
-      .then(response => {
-        const animalOptions = response.data.map(animal => ({
-          key: animal.animal_id,
-          text: animal.name,
-          value: animal.name
-        }));
-        this.setState({ animalOptions });
-      })
-      .catch(error => {
-        console.error("Error: cannot receive animal data from DB")
-      })
-  }
+  const navigate = useNavigate();
+  const context = useContext(AnimalContext);
 
-  handleChange = (e, { searchQuery, value }) => {
-    if (value === 'Goat/Sheep') {
-      value = 'goat_sheep'
+  useEffect(() => {
+    setOptions();
+  }, []);
+
+  const setOptions = async () => {
+    try {
+      const animals = await get(animalUri);
+      const options = mapOptions(animals);
+
+      setState({
+        ...state,
+        animals: animals,
+        options: options,
+      })
+
+    } catch (e) {
+      setState({
+        ...state,
+        options: [],
+      })
+
     }
-    window.location.href = `/dosages/${value}`
-    this.setState({ searchQuery, value })
   }
 
-  editAnimal = async (animalId) => {
+  const mapOptions = (animals) => {
+    const options = animals.map(animal => ({
+      key: animal.animal_id,
+      text: animal.name,
+      value: animal.name
+    }
+    ));
+
+    return options;
+  }
+
+
+  const getAnimalByName = (name) => {
+    const animal = state.animals.find(element => element.name === name) ?? {};
+    return animal;
+  }
+
+  const editAnimal = async (animalId) => {
     window.location.href = `/animals/${animalId}`
   }
 
-  deleteAnimal = async (animalId) => {
+  const deleteAnimal = async (animalId) => {
     try {
       await api.delete(`/animals/${animalId}`);
       window.location.reload();
@@ -46,50 +74,58 @@ export default class DropdownAnimalSearchQuery extends Component {
     }
   }
 
-  handleSearchChange = (e, { searchQuery }) => this.setState({ searchQuery })
+  const handleChange = (e, { searchQuery, value }) => {
+    setState({
+      ...state,
+      searchQuery: searchQuery,
+      value: value,
+    });
+    context.currentAnimal = getAnimalByName(value);
+    navigate(`/dosages/${value}`);
+  };
 
-  render() {
-    const { searchQuery, value, animalOptions } = this.state
+  const handleSearchChange = (e, { searchQuery }) => {
+    setState({
+      ...state,
+      searchQuery: searchQuery
+    });
+  };
 
-    // Render animalOptions as a list
-    const animalList = animalOptions.map(animal => {
-      return (
-        <List.Item className="animalListItem" key={animal.key}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Header as={'a'} size="small" href='#' onClick={() => this.handleChange(null, animal)} style={{ flex: 1 }}>
-              {animal.text}
-            </Header>
-            <Button onClick={() => this.editAnimal(animal.key)} style={{ marginLeft: '10px' }} icon>
-              <Icon name='pencil'></Icon>
-            </Button>
-            <Button onClick={() => this.deleteAnimal(animal.key)} style={{ marginLeft: '10px' }} icon>
-              <Icon name='delete'></Icon>
-            </Button>
-          </div>
-        </List.Item>
-      )
-    })
+  console.log(state.animals[0])
 
-    return (
-      <>
-        <Dropdown
-          fluid
-          onChange={this.handleChange}
-          onSearchChange={this.handleSearchChange}
-          options={this.state.animalOptions}
-          placeholder='Animal'
-          search
-          searchQuery={searchQuery}
-          selection
-          value={value}
-        />
-
-        <AddAnimal></AddAnimal>
-
-        <List className="animalList" divided relaxed>
-          {animalList}
-        </List>
-      </>
-    )
-  }
+  return (
+    <div>
+      <Dropdown
+        fluid
+        onChange={handleChange}
+        onSearchChange={handleSearchChange}
+        options={state.options}
+        placeholder='Animal'
+        search
+        searchQuery={state.searchQuery}
+        selection
+        value={state.value}
+      />
+      <AddAnimal></AddAnimal>
+      <List className='animalList' divided relaxed>
+        {state.animals.map(animal => (
+          <List.Item className="animalListItem" key={animal.animal_id}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Header size="small" style={{ flex: 1 }}>
+                {animal.name}
+              </Header>
+              <Button onClick={() => editAnimal(animal.animal_id)} style={{ marginLeft: '10px' }} icon>
+                <Icon name='pencil'></Icon>
+              </Button>
+              <Button onClick={() => deleteAnimal(animal.animal_id)} style={{ marginLeft: '10px' }} icon>
+                <Icon name='delete'></Icon>
+              </Button>
+            </div>
+          </List.Item>
+        ))}
+      </List>
+    </div>
+  )
 }
+
+export default DropdownAnimalSearchQuery;
