@@ -4,6 +4,8 @@ import api from "../services/api";
 import axios from 'axios';
 
 
+
+
 // Creates the popup element to edit a particular dosage
 function EditDosageModal({ dosage, editDosage }) {
   const [open, setOpen] = React.useState(false)
@@ -16,9 +18,31 @@ function EditDosageModal({ dosage, editDosage }) {
 
   // Variables for currently selected options
   const [selectedDrugId, setSelectedDrugId] = useState(null);
+  const [selectedUnitsId, setSelectedUnitsId] = useState(null);
   const [selectedAnimalId, setSelectedAnimalId] = useState(null);
   const [selectedDoseId, setSelectedDoseId] = useState(null);
   const [selectedConcentrationId, setSelectedConcentrationId] = useState(null);
+
+
+  // Retrieve dosage
+  useEffect(() => {
+    api.get(`/dosages/${dosageValues.dosage_id}`)
+      .then(response => {
+        const dosage = response.data;
+        const dosageOptions = {
+          animal_id: dosage.animal_id,
+          dosage_id: dosage.dosage_id,
+          dose_high: dosage.dose_high,
+          dose_low: dosage.dose_low,
+          dose_unit_id: dosage.dose_unit_id,
+          drug_id: dosage.drug_id,
+          notes: dosage.notes,
+        }
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  }, []);
 
   // Retrieve the units from api
   useEffect(() => {
@@ -64,25 +88,56 @@ function EditDosageModal({ dosage, editDosage }) {
       });
   }, []);
 
-  function onSubmit() {
-    api.put(`https://vaddb.liamgombart.com/dosages/${dosageValues.dosage_id}`, dosageValues);
-    setOpen(false)
+  // DEBUG FOR DELETING BAD DOSAGES
+  // useEffect(() => {
+  //   api.delete('https://vaddb.liamgombart.com/dosages/250')
+  //     .then(response => {
+  //       console.log(response);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
+  // Function for updating dosage DB entry
+  function updateDosage(dosage_id, formData) {
+    //console.log(formData)
+    return api.put(`/dosages/${dosage_id}`, formData);
   }
 
-  function handleDropdownChange(value) {
-    this.dosageValues({
-      doseUnit: value,
-      concentrationUnit: value
-    });
-  };
-
-  function updateValue(input) {
-    let newData = Object.assign({}, dosageValues, input)
-
-    setNewValues(newData)
+  // Function for handling form submit
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    if (selectedDrugId !== null) {
+      formData.append('drug_id', selectedDrugId);
+    } else {
+      formData.append('drug_id', dosageValues.drug.drug_id);
+    }
+    if (selectedUnitsId !== null) {
+      formData.append('dose_unit_id', selectedUnitsId);
+    } else {
+      formData.append('dose_unit_id', dosageValues.dose_unit.unit_id);
+    }
+    formData.append('animal_id', dosageValues.animal.animal_id);
+    formData.append('dosage_id', dosageValues.dosage_id);
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    updateDosage(dosageValues.dosage_id, formData)
+      .then(response => {
+        console.log("Dosage updated successfully.", response.data);
+        setOpen(false);
+      })
+      .catch(error => {
+        console.error("Error: updating dosage data.", error);
+      })
   }
 
-  console.log(newValues)
+  // const handleDropdownChange = (event, { value }) => {
+  //   setSelectedDrugId(value);
+  // };
+
 
   return (
     <Modal
@@ -95,55 +150,35 @@ function EditDosageModal({ dosage, editDosage }) {
       <Modal.Header>Edit Drug Information</Modal.Header>
       <Modal.Content>
         <Modal.Description>
-          <Form.Group width="equal">
-            <Form.Field
-              control={Dropdown}
-              name="name"
-              label="Drug Name:   "
-              placeholder={dosageValues.drug.name}
-              style={{ width: "700px" }}
-              selection
-              options={drugs.map(drug => ({ text: drug.name, value: drug.drug_id }))}
-              onChange={(e, { value, text }) => {
-                setSelectedDrugId(value);
-                updateValue({ drug_id: e.target.value })
-              }}
-            />
+          <Form onSubmit={handleSubmit}>
+            <Form.Group width="equal">
+              <Form.Dropdown
+                label="Drug Name:   "
+                placeholder={dosageValues.drug.name}
+                search
+                style={{ width: "700px" }}
+                selection
+                options={drugs.map(drug => ({ text: drug.name, value: drug.drug_id }))}
+                name="drug_id"
+                value={selectedDrugId}
+                onChange={(e, { value }) => setSelectedDrugId(value)}
+              />
+              <br />
+            </Form.Group>
+            {/* <Form.Group>
+              <label><u>Methods</u></label>
+              {methods.map(method => (
+                <Form.Input
+                  key={method.method_id}
+                  label={method.name}
+                  control='input'
+                  type='checkbox'
+                  checked={dosageValues.methods.some((value) => value.method_id === method.method_id)}
+                />
+              ))}
+            </Form.Group> */}
             <br />
-          </Form.Group>
-          <Form.Group>
-            <label><u>Methods</u></label>
-            {methods.map(method => (
-              <Form.Field 
-              key={method.method_id}
-              label={method.name}
-              control='input'
-              type='checkbox'
-              checked={dosageValues.methods.some((value) => value.method_id === method.method_id)}
-              onChange={(e) => {
-                const checked = e.target.checked;
-                const methodId = method.method_id;
-                const methodName = method.name;
-
-                if (checked) {
-                  updateValue({
-                    methods: [
-                      ...dosageValues.methods,
-                      {method_id: methodId, name: methodName}
-                    ]
-                  })
-                }
-                else {
-                  updateValue({
-                    methods: dosageValues.methods.filter(value => value.method_id !== methodId)
-                  })
-                }
-              }}
-            />
-            ))}
-          </Form.Group>
-          <br />
-          {/* <Form.Group> */}
+            {/* <Form.Group> */}
             {/* <label><u>Add New Concentration</u></label>
             <Form.Field
             label='Amount'
@@ -195,69 +230,63 @@ function EditDosageModal({ dosage, editDosage }) {
               />
             ))}
           </Form.Group> */}
-          <br />
-          <Form.Group>
-            <Form.Field
+            <br />
+            <Form.Group>
+              <Form.Input
+                control={Input}
+                type='number'
+                style={{ width: 100 }}
+                name="dose_low"
+                label="Dosage Range:   "
+                placeholder="Dosage Low"
+                defaultValue={dosageValues.dose_low}
+                value={dosageValues.doseLow}
+              />
+              <Form.Field>to</Form.Field>
+              <Form.Input
+                control={Input}
+                type='number'
+                style={{ width: 100 }}
+                name="dose_high"
+                label="&nbsp;"
+                placeholder="Dosage High"
+                defaultValue={dosageValues.dose_high}
+                value={dosageValues.doseHigh}
+              />
+              <Form.Dropdown
+                search
+                name="dose_unit_id"
+                label="Dosage Unit"
+                placeholder={dosageValues.dose_unit.name}
+                selection
+                options={units.map(unit => ({ text: unit.name, value: unit.unit_id }))}
+                onChange={(e, { value }) => setSelectedUnitsId(value)}
+                value={selectedUnitsId}
+              />
+            </Form.Group>
+            <br />
+            <Form.Input
               control={Input}
-              type='number'
-              style={{ width: 100 }}
-              name="doseLow"
-              label="Dosage Range:   "
-              placeholder="Dosage Low"
-              defaultValue={dosageValues.dose_low}
-              value={dosageValues.doseLow}
-              onChange={(e) => updateValue({ dose_low: parseFloat(e.target.value) })}
+              style={{ width: 700 }}
+              name="notes"
+              label="Notes:   "
+              placeholder="Notes"
+              defaultValue={dosageValues.notes}
             />
-            <Form.Field>to</Form.Field>
-            <Form.Field
-              control={Input}
-              type='number'
-              style={{ width: 100 }}
-              name="doseHigh"
-              label="&nbsp;"
-              placeholder="Dosage High"
-              defaultValue={dosageValues.dose_high}
-              value={dosageValues.doseHigh}
-              onChange={(e) => updateValue({ dose_high: parseFloat(e.target.value) })} />
-
-            <Form.Field
-              control={Dropdown}
-              name="doseUnit"
-              label="Dosage Unit"
-              placeholder={dosageValues.dose_unit.name}
-              selection
-              options={units.map(unit => ({ text: unit.name, value: unit.unit_id }))}
-              onChange={(e, { value, text }) => {
-                setSelectedDoseId(value);
-                updateValue({ dose_unit: { unit_id: value, name: units.find(unit => unit.unit_id === value).name}});
-              }}
+            <Form.Button color='black' onClick={() => setOpen(false)}>
+              Cancel
+            </Form.Button>
+            <Form.Button
+              type='submit'
+              content="Submit"
+              labelPosition='right'
+              icon='checkmark'
+              positive
             />
-          </Form.Group>
-          <br />
-          <Form.Field
-            control={Input}
-            style={{ width: 700 }}
-            name="notes"
-            label="Notes:   "
-            placeholder="Notes"
-            value={dosageValues.notes}
-            onChange={(e) => updateValue({ notes: e.target.value })}
-          />
+          </Form>
 
         </Modal.Description>
       </Modal.Content>
-      <Modal.Actions>
-        <Button color='black' onClick={() => setOpen(false)}>
-          Cancel
-        </Button>
-        <Button
-          content="Submit"
-          labelPosition='right'
-          icon='checkmark'
-          onClick={() => onSubmit()}
-          positive
-        />
-      </Modal.Actions>
     </Modal>
   )
 }

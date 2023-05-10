@@ -89,9 +89,6 @@ class AddDrug extends Component {
     const one = this.state.doseLow;
     const two = this.state.doseHigh;
     const notes = this.state.notes;
-    // alert(notes);
-    // return;
-    // return;
     var concentrationValue = this.state.concentration;
 
     var unitIdValue = this.state.unitId;
@@ -101,7 +98,6 @@ class AddDrug extends Component {
     // alert(this.state.name)
     api.post('/drugs', {
       Authentication: API_KEY,
-      //drug_id: 161,
       name: this.state.name
 
     })
@@ -111,13 +107,8 @@ class AddDrug extends Component {
             const myPromise = new Promise((resolve, reject) => {
               try {
                 const drugId = Object.values(response.data);
-
-                // drugId2 = drugId.pop().drug_id;
-                //this.setState({drugIdState: drugId.pop().drug_id });  
+ 
                 drugIdState = drugId.pop().drug_id;
-                // console.log("the drug list:");    
-                // console.log(drugId.pop()) ;
-                // const result = myClassInstance.myMethod(); // Execute the method
 
                 resolve("ok"); // Resolve the Promise with the result
               } catch (error) {
@@ -125,14 +116,6 @@ class AddDrug extends Component {
               }
 
             });
-            // console.log( localStorage.getItem("animal_id"));
-            // console.log( this.state.optionDose);
-            // console.log("Dose Low: "+one);
-            // console.log("Dose High: "+two);
-            // console.log(this.state.notes);
-
-            // console.log( localStorage.getItem("animal_id"));
-            // console.log( localStorage.getItem("animal_id"));
 
             myPromise.then(response => {
               api.post('/dosages', {
@@ -153,8 +136,7 @@ class AddDrug extends Component {
                           const drugId = Object.values(response.data);
 
                           const dosageId = Object.values(response.data);
-                          dosageIdState = dosageId.pop().dosage_id;
-                          // doseId2 = dosageId.pop().dosage_id;                            
+                          dosageIdState = dosageId.pop().dosage_id;                          
 
                           resolve("ok"); // Resolve the Promise with the result
                         }
@@ -165,12 +147,8 @@ class AddDrug extends Component {
 
                       });
 
-                      //alert("the id of the dosage is:"+concentrationValue);
                       promiseC.then(response => {
 
-
-                        // console.log("the id of the dosage is:"+dosageIdState);
-                        // console.log("the id of the dosage is:"+dosageIdState);
                         api.post('/concentrations', {
 
                           Authentication: API_KEY,
@@ -179,11 +157,8 @@ class AddDrug extends Component {
                           dosage_id: dosageIdState,             // Needs to come from get from /dosage!
                         })
 
-
-
                         api.post('/delivery', {
                           Authentication: API_KEY,
-                          //drug_id: 161,
                           dosage_id: dosageIdState,
                           method_id: methodUnitId,
 
@@ -192,10 +167,8 @@ class AddDrug extends Component {
                         )
 
                           .catch(error => {
-                            // console.error("Error: cannot receive drug data from DB")
                             console.error(error)
                           });
-
 
                       })
                         .catch(function (error) {
@@ -215,28 +188,17 @@ class AddDrug extends Component {
           })
 
           .catch(error => {
-            // console.error("Error: cannot receive drug data from DB")
-            // console.error(error)
+            console.error(error)
           })
 
       );
 
 
 
-    // // //return; 
-    // // if (this.state.name === "") {
-    // //     alert("Drug field is mandatory!");
-    // //     return;
-    // // }
-    // this.props.getDosages();
-
-    // this.props.addDrugHandler(this.state);
-    //const animal_id = this.context.currentAnimal.animal_id;
     if (this.context.currentAnimal.animal_id !== undefined) {
       localStorage.setItem("animal_id", this.context.currentAnimal.animal_id);
     }
 
-    // console.log(localStorage.getItem("animal_id"));
 
     this.setState({ id: "", name: "", method: "", concentration: "", concentrationUnit: "", doseLow: "", doseHigh: "", dosageUnit: "", notes: "" });
     this.props.getDosages();

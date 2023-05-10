@@ -91,8 +91,6 @@ const DropdownAnimalSearchQuery = () => {
     });
   };
 
-  console.log(state.animals[0])
-
   return (
     <div>
       <Dropdown
