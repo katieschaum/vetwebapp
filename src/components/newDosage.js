@@ -127,6 +127,8 @@ class NewDosage extends Component {
                         name="notes"
                         label="Notes:   "
                         placeholder="Notes"
+                        value={this.state.notes}
+                        onChange={(e, {value}) => this.setState({ notes: value })}
                     />
                     <button className="ui button blue">Add</button>
                 </form>
