@@ -9,7 +9,7 @@ function App() {
     <div className="ui container">
       <Header></Header>
       <br/>
-      <h3 align='center'> Which Animal Would You Like to See?</h3>
+      <h3 align='center'>Choose an animal from dropdown to view Dosages.</h3>
       <DropdownAnimalSearchQuery></DropdownAnimalSearchQuery>
     </div>
   );

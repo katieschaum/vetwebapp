@@ -26,3 +26,24 @@ h1 {
   text-transform: capitalize;
   text-align: center;
 }
+
+.addAnimal {
+  padding: 10px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.animalList {
+  background-color: #F9F9F9;
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  text-align: end;
+}
+
+.animalListItem {
+  width: 25%;
+  font-size: medium;
+  padding-right: 10px;
+}
