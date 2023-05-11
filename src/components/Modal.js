@@ -10,7 +10,6 @@ import axios from 'axios';
 function EditDosageModal({ dosage, editDosage }) {
   const [open, setOpen] = React.useState(false)
   const [dosageValues, setDosageValues] = useState(dosage)
-  const [newValues, setNewValues] = useState([]);
   const [units, setUnits] = useState([]);
   const [methods, setMethods] = useState([]);
   const [drugs, setDrugs] = useState([]);
@@ -19,10 +18,13 @@ function EditDosageModal({ dosage, editDosage }) {
   // Variables for currently selected options
   const [selectedDrugId, setSelectedDrugId] = useState(null);
   const [selectedUnitsId, setSelectedUnitsId] = useState(null);
-  const [selectedAnimalId, setSelectedAnimalId] = useState(null);
-  const [selectedDoseId, setSelectedDoseId] = useState(null);
-  const [selectedConcentrationId, setSelectedConcentrationId] = useState(null);
+  const [selectedMethods, setSelectedMethods] = useState(dosage.methods.map(method => method.method_id));
+  const [selectedConcs, setSelectedConcs] = useState(dosage.concentrations);
+  const [selectedConcUnit, setSelectedConcUnit] = useState(dosage.concentrations[0].unit.unit_id);
+  const [newConcs, setNewConcs] = useState();
 
+
+  const API_KEY = process.env.REACT_APP_API_KEY;
 
   // Retrieve dosage
   useEffect(() => {
@@ -88,20 +90,10 @@ function EditDosageModal({ dosage, editDosage }) {
       });
   }, []);
 
-  // DEBUG FOR DELETING BAD DOSAGES
-  // useEffect(() => {
-  //   api.delete('https://vaddb.liamgombart.com/dosages/250')
-  //     .then(response => {
-  //       console.log(response);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // }, []);
-
   // Function for updating dosage DB entry
   function updateDosage(dosage_id, formData) {
-    //console.log(formData)
+    // console.log(formData)
+    // console.log(selectedConcs)
     return api.put(`/dosages/${dosage_id}`, formData);
   }
 
@@ -125,8 +117,124 @@ function EditDosageModal({ dosage, editDosage }) {
       console.log(`${key}: ${value}`);
     }
     updateDosage(dosageValues.dosage_id, formData)
-      .then(response => {
-        console.log("Dosage updated successfully.", response.data);
+    // First delete any entries not in selectedMethods
+    api.get(`/delivery?dosage_id=${dosageValues.dosage_id}`)
+      .then((response) => {
+        response.data.forEach((delivery) => {
+          if (!selectedMethods.includes(delivery.method_id)) {
+            api.delete(`/delivery`, {
+              params: {
+                dosage_id: dosageValues.dosage_id,
+                method_id: delivery.method_id,
+              }
+            }).then((response) => {
+              // check if the API call was successful
+              if (response.status === 200) {
+                console.log("Delivery method deleted successfully.");
+              } else {
+                console.log("Error deleting delivery method.");
+              }
+            }).catch((error) => {
+              console.log(error);
+            });
+          }
+        })
+      }).catch((error) => {
+        console.log(error);
+      })
+      // Now add entries from selectedMethods
+      .then(() => {
+        selectedMethods.forEach((method_id) => {
+          api.post(`/delivery`, {
+            dosage_id: dosageValues.dosage_id,
+            method_id: method_id,
+          })
+            .then((response) => {
+              // check if the response was successful
+              if (response.status === 200) {
+                console.log(`Delivery method ${method_id} successfully added.`);
+              } else {
+                console.error(`Error adding delivery method ${method_id}.`);
+              }
+            })
+            .catch((error) => {
+              console.error(`Error adding delivery method ${method_id}: ${error.message}`);
+            });
+        });
+      })
+      // Delete concentrations not in newConcs
+      .then(() => {
+        if (newConcs !== undefined) {
+          api.get(`/concentrations?dosage_id=${dosageValues.dosage_id}`)
+            .then((response) => {
+              if (response.status !== 200) {
+                throw new Error(`Error getting concentrations for dosage ID ${dosageValues.dosage_id}`);
+              }
+              response.data.forEach((concentration) => {
+                api.delete(`/concentrations/${concentration.concentration_id}`)
+                  .then((response) => {
+                    if (response.status !== 200) {
+                      throw new Error(`Error deleting concentration with ID ${concentration.concentration_id}`);
+                    }
+                    console.log(`Concentration with ID ${concentration.concentration_id} successfully deleted.`);
+                  })
+                  .catch((error) => {
+                    console.error(`Error deleting concentration with ID ${concentration.concentration_id}: ${error.message}`);
+                  });
+              })
+              newConcs.forEach((concentration) => {
+                api.post(`/concentrations`, {
+                  value: concentration,
+                  unit_id: selectedConcUnit,
+                  dosage_id: dosageValues.dosage_id,
+                })
+                  .then((response) => {
+                    if (response.status !== 200) {
+                      throw new Error(`Error adding concentration with value ${concentration}`);
+                    }
+                    console.log(`Concentration with value ${concentration} successfully added.`);
+                  })
+                  .catch((error) => {
+                    console.error(`Error adding concentration with value ${concentration}: ${error.message}`);
+                  });
+              })
+            })
+            .catch((error) => {
+              console.error(`Error getting concentrations for dosage ID ${dosageValues.dosage_id}: ${error.message}`);
+            });
+        }
+        // If no new concentrations but there are new units
+        else if (newConcs === undefined && selectedConcUnit !== undefined) {
+          api.get(`/concentrations?dosage_id=${dosageValues.dosage_id}`)
+            .then((response) => {
+              if (response.status !== 200) {
+                throw new Error(`Error getting concentrations for dosage ID ${dosageValues.dosage_id}`);
+              }
+              response.data.forEach((concentration) => {
+                api.put(`/concentrations/${concentration.concentration_id}`, {
+                  value: concentration.value,
+                  unit_id: selectedConcUnit,
+                  dosage_id: concentration.dosage_id,
+                })
+                  .then((response) => {
+                    if (response.status !== 200) {
+                      throw new Error(`Error updating concentration with ID ${concentration.concentration_id}`);
+                    }
+                    console.log(`Concentration with ID ${concentration.concentration_id} successfully updated.`);
+                  })
+                  .catch((error) => {
+                    console.error(`Error updating concentration with ID ${concentration.concentration_id}: ${error.message}`);
+                  });
+              })
+            })
+            .catch((error) => {
+              console.error(`Error getting concentrations for dosage ID ${dosageValues.dosage_id}: ${error.message}`);
+            });
+        }
+
+      })
+      .then(() => {
+        console.log("Dosage updated successfully.");
         setOpen(false);
       })
       .catch(error => {
@@ -134,10 +242,7 @@ function EditDosageModal({ dosage, editDosage }) {
       })
   }
 
-  // const handleDropdownChange = (event, { value }) => {
-  //   setSelectedDrugId(value);
-  // };
-
+  console.log(dosage.concentrations[0].unit)
 
   return (
     <Modal
@@ -165,72 +270,51 @@ function EditDosageModal({ dosage, editDosage }) {
               />
               <br />
             </Form.Group>
-            {/* <Form.Group>
-              <label><u>Methods</u></label>
-              {methods.map(method => (
-                <Form.Input
-                  key={method.method_id}
-                  label={method.name}
-                  control='input'
-                  type='checkbox'
-                  checked={dosageValues.methods.some((value) => value.method_id === method.method_id)}
-                />
-              ))}
-            </Form.Group> */}
-            <br />
-            {/* <Form.Group> */}
-            {/* <label><u>Add New Concentration</u></label>
-            <Form.Field
-            label='Amount'
-            control={Input}
-            type='number'
-            />
-            <Form.Field
-            control={Dropdown}
-            name="concentrationUnit"
-            label="Concentration Unit"
-            placeholder={dosageValues.dose_unit.name}
-            selection
-            options={units.map(unit => ({ text: unit.name, value: unit.unit_id }))}
-            onChange={(e, { value, text }) => {
-              setSelectedConcentrationId(value);
-            }}
-            />
-            <Button>Add Concentration</Button>
-            <br></br>
-            <label><u>Concentrations</u></label>
-            {dosageValues.concentrations.map(concentration => (
-              <Form.Field
-              key={concentration.concentration_id}
-              label={concentration.value + ' ' + concentration.unit.name}
-              control='input'
-              type='checkbox'
-              checked={dosageValues.concentrations.some((value) => value.concentration_id === concentration.concentration_id)}
-              onChange={(e) => {
-                const checked = e.target.checked;
-                const concentrationId = concentration.concentration_id;
-                const concentrationValue = concentration.value;
-                const unitId = concentration.unit.unit_id;
-                const unitName = concentration.unit.name;
-
-                if (checked) {
-                  updateValue({
-                    concentrations: [
-                      ...dosageValues.concentrations,
-                      {concentration_id: concentrationId, value: concentrationValue}
-                    ]
-                  })
-                }
-                else {
-                  updateValue({
-                    concentrations: dosageValues.concentrations.filter(value => value.concentration_id !== concentrationId)
-                  })
-                }
-              }}
+            <Form.Group>
+              <Form.Dropdown
+                label="Methods:   "
+                search
+                style={{ width: "700px" }}
+                selection
+                options={methods.map(method => ({ text: method.name, value: method.method_id }))}
+                name="method_id"
+                multiple
+                value={selectedMethods}
+                onChange={(e, { value }) => setSelectedMethods(value)}
+                required
               />
-            ))}
-          </Form.Group> */}
+            </Form.Group>
             <br />
+            <Form.Group>
+              <Form.Dropdown
+                control={Input}
+                search
+                type='text'
+                name="conc_value"
+                label="Concentration Values: "
+                placeholder="(separate with commas)"
+                defaultValue={selectedConcs.map(obj => obj.value).join(",")}
+                onChange={(e) => {
+                  const input = e.target.value;
+                  const regex = /^[0-9.,]*$/;  // regular expression to match numbers, commas, and whitespace
+                  if (regex.test(input)) {
+                    const concs = input.replace(/[^0-9.,]/g, '').split(',').map(str => parseFloat(str));  // remove non-numeric characters and split into an array
+                    setNewConcs(concs);
+                  }
+                }}
+              />
+              <Form.Dropdown
+                label="Concentration Units:   "
+                search
+                style={{ width: 100 }}
+                selection
+                options={units.map(unit => ({ text: unit.name, value: unit.unit_id }))}
+                name="conc_unit"
+                defaultValue={dosage.concentrations[0].unit.unit_id}
+                onChange={(e, { value }) => setSelectedConcUnit(value)}
+                required
+              />
+            </Form.Group>
             <Form.Group>
               <Form.Input
                 control={Input}
