@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { Component } from "react";
 import { useParams } from 'react-router-dom';
-import { Form, Input } from "semantic-ui-react";
+import { Form, Input, Button, Grid } from "semantic-ui-react";
 import api from "../services/api";
 import axios from 'axios';
 
@@ -28,6 +28,10 @@ class NewDosage extends Component {
         chosenConcs: [],
         // new dosage ID
         newDosageId: "",
+        // variable for new drug name
+        new_drug_name: "",
+        // for choosing drug to delete
+        drug_to_delete: "",
     };
     setState = this.setState.bind(this);
 
@@ -108,9 +112,69 @@ class NewDosage extends Component {
             });
     };
 
+    // Add a new drug to the DB
+    addDrug = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post(`/drugs`, {
+                Authentication: API_KEY,
+                name: this.state.new_drug_name,
+            })
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Delete a drug from the DB
+    delDrug = async (e) => {
+        e.preventDefault();
+        try {
+            await api.delete(`/drugs/${this.state.drug_to_delete}`);
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     render() {
         return (
             <div>
+                <Grid columns={2}>
+                    <Grid.Column width={8}>
+                        <form className="ui form" onSubmit={this.addDrug}>
+                            <h2>Add New Drug to the Database</h2>
+                            <Form.Group>
+                                <Form.Input
+                                    control={Input}
+                                    name="new_drug_name"
+                                    label="Drug Name: "
+                                    onChange={(e, { value }) => this.setState({ new_drug_name: value })}
+                                    required>
+                                </Form.Input>
+                            </Form.Group>
+                            <Button style={{ marginBottom: '20px' }}>Add Drug</Button>
+                        </form>
+                    </Grid.Column>
+                    <Grid.Column width={8}>
+                        <form className="ui form" onSubmit={this.delDrug}>
+                            <h2>Delete Drug from Database</h2>
+                            <Form.Group>
+                                <Form.Dropdown
+                                    label="Drugs:   "
+                                    search
+                                    selection
+                                    options={this.state.drugList.map(drug => ({ text: drug.name, value: drug.drug_id }))}
+                                    name="drug_id"
+                                    value={this.state.drug_to_delete}
+                                    onChange={(e, { value }) => this.setState({ drug_to_delete: value })}
+                                    required
+                                />
+                            </Form.Group>
+                            <Button style={{ marginBottom: '20px' }}>Delete Drug</Button>
+                        </form>
+                    </Grid.Column>
+                </Grid>
                 <form className="ui form" onSubmit={this.add}>
                     <h2>Add New Dosage for {this.props.animal.name}</h2>
                     <Form.Group width="equal">
