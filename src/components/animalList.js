@@ -81,6 +81,7 @@ const DropdownAnimalSearchQuery = () => {
       value: value,
     });
     context.currentAnimal = getAnimalByName(value);
+    //window.location.href = `/dosages/${value}`
     navigate(`/dosages/${value}`);
   };
 

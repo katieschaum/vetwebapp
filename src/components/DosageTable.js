@@ -3,12 +3,11 @@ import './App.css';
 import Header from "./header";
 import NewDosage from "./newDosage";
 import DosageList from "./dosageList";
-import { useParams, useNavigate, json } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'semantic-ui-react';
 import VitalsCard from './vitalsList';
 import { AnimalContext } from '../context/animal_context';
 import processDosages from '../services/deref';
-import axios from 'axios';
 import api from '../services/api';
 
 const dosageUri = `https://vaddb.liamgombart.com/deref/dosages`
@@ -173,7 +172,7 @@ const DosageTable = () => {
       <h3>Vitals</h3>
       <VitalsCard currentAnimal={vitals}></VitalsCard>
       <NewDosage getDosages={getDosages} animal={JSON.parse(localStorage.getItem('currentAnimal'))} AnimalHandler={addDosageHandler}> </NewDosage> 
-      <h2>Dosage List for {JSON.parse(localStorage.getItem('currentAnimal')).name}</h2>
+      {/* <h2>Dosage List for {JSON.parse(localStorage.getItem('currentAnimal')).name}</h2> */}
       <DosageList  dosages={dosages.dosages} editDosageHandler={editDosageHandler} deleteDosageHandler={removeDosageHandler}></DosageList>
     {/* <button onClick={showInfo}>Show Dosages for {context.currentAnimal.name}</button> */}
     <br/>
