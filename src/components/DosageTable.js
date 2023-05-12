@@ -171,8 +171,8 @@ const DosageTable = () => {
       <h1>{window.location.pathname.split("/").pop()}</h1>
       <h3>Vitals</h3>
       <VitalsCard currentAnimal={vitals}></VitalsCard>
-      <NewDosage getDosages={getDosages} animal={JSON.parse(localStorage.getItem('currentAnimal'))} AnimalHandler={addDosageHandler}> </NewDosage> 
-      {/* <h2>Dosage List for {JSON.parse(localStorage.getItem('currentAnimal')).name}</h2> */}
+      <NewDosage getDosages={getDosages} animal={vitals} AnimalHandler={addDosageHandler}> </NewDosage> 
+      <h2>Dosage List for {vitals.name}</h2>
       <DosageList  dosages={dosages.dosages} editDosageHandler={editDosageHandler} deleteDosageHandler={removeDosageHandler}></DosageList>
     {/* <button onClick={showInfo}>Show Dosages for {context.currentAnimal.name}</button> */}
     <br/>
