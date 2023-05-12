@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { Dropdown, List, Header, Icon, Button } from 'semantic-ui-react'
+import React, {useState, useEffect, useContext} from 'react'
+import { Dropdown } from 'semantic-ui-react'
 import get from '../services/get';
-import api from "../services/api";
-import { AnimalContext } from '../context/animal_context';
+import { AnimalContext } from  '../context/animal_context';
 import { useNavigate } from 'react-router-dom';
-import AddAnimal from './addAnimal';
 
 // Creates the dropdown component on the homepage for the user to select which animal to view.
 const animalUri = "https://vaddb.liamgombart.com/animals";
@@ -20,7 +18,7 @@ const DropdownAnimalSearchQuery = () => {
   const navigate = useNavigate();
   const context = useContext(AnimalContext);
 
-  useEffect(() => {
+  useEffect( () => {
     setOptions();
   }, []);
 
@@ -40,17 +38,17 @@ const DropdownAnimalSearchQuery = () => {
         ...state,
         options: [],
       })
-
+    
     }
   }
 
   const mapOptions = (animals) => {
     const options = animals.map(animal => ({
-      key: animal.animal_id,
-      text: animal.name,
-      value: animal.name
-    }
-    ));
+        key: animal.animal_id,
+        text: animal.name,
+        value: animal.name
+      }
+      ));
 
     return options;
   }
@@ -60,21 +58,8 @@ const DropdownAnimalSearchQuery = () => {
     const animal = state.animals.find(element => element.name === name) ?? {};
     return animal;
   }
-
-  const editAnimal = async (animalId) => {
-    window.location.href = `/animals/${animalId}`
-  }
-
-  const deleteAnimal = async (animalId) => {
-    try {
-      await api.delete(`/animals/${animalId}`);
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const handleChange = (e, { searchQuery, value }) => {
+    
+  const handleChange = (e, {searchQuery, value}) => {
     setState({
       ...state,
       searchQuery: searchQuery,
@@ -82,17 +67,16 @@ const DropdownAnimalSearchQuery = () => {
     });
     context.currentAnimal = getAnimalByName(value);
     navigate(`/dosages/${value}`);
-  };
+  };   
 
   const handleSearchChange = (e, { searchQuery }) => {
-    setState({
+    setState({ 
       ...state,
-      searchQuery: searchQuery
+      searchQuery: searchQuery 
     });
   };
 
   return (
-    <div>
       <Dropdown
         fluid
         onChange={handleChange}
@@ -104,25 +88,6 @@ const DropdownAnimalSearchQuery = () => {
         selection
         value={state.value}
       />
-      <AddAnimal></AddAnimal>
-      <List className='animalList' divided relaxed>
-        {state.animals.map(animal => (
-          <List.Item className="animalListItem" key={animal.animal_id}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Header size="small" style={{ flex: 1 }}>
-                {animal.name}
-              </Header>
-              <Button onClick={() => editAnimal(animal.animal_id)} style={{ marginLeft: '10px' }} icon>
-                <Icon name='pencil'></Icon>
-              </Button>
-              <Button onClick={() => deleteAnimal(animal.animal_id)} style={{ marginLeft: '10px' }} icon>
-                <Icon name='delete'></Icon>
-              </Button>
-            </div>
-          </List.Item>
-        ))}
-      </List>
-    </div>
   )
 }
 
