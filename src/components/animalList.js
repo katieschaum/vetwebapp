@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Dropdown, List, Header, Icon, Button } from 'semantic-ui-react'
+import { Dropdown, List, Header, Icon, Button, Grid } from 'semantic-ui-react'
 import get from '../services/get';
 import api from "../services/api";
 import { AnimalContext } from '../context/animal_context';

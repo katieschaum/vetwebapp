@@ -242,8 +242,6 @@ function EditDosageModal({ dosage, editDosage }) {
       })
   }
 
-  console.log(dosage.concentrations[0].unit)
-
   return (
     <Modal
       onClose={() => setOpen(false)}

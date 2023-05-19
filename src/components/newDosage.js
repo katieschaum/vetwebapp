@@ -41,7 +41,6 @@ class NewDosage extends Component {
         axios.get('https://vaddb.liamgombart.com/drugs')
             .then(response => {
                 this.setState({ drugList: response.data });
-                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
@@ -51,7 +50,6 @@ class NewDosage extends Component {
         axios.get('https://vaddb.liamgombart.com/units')
             .then(response => {
                 this.setState({ unitList: response.data });
-                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
@@ -60,7 +58,6 @@ class NewDosage extends Component {
         axios.get('https://vaddb.liamgombart.com/methods')
             .then(response => {
                 this.setState({ methodList: response.data });
-                console.log(response.data);
             })
             .catch(error => {
                 console.log(error);
@@ -140,8 +137,9 @@ class NewDosage extends Component {
     render() {
         return (
             <div>
+                <div style={{margin: 'auto'}}>
                 <Grid columns={2}>
-                    <Grid.Column width={8}>
+                    <Grid.Column computer={8} mobile={16}>
                         <form className="ui form" onSubmit={this.addDrug}>
                             <h2>Add New Drug to the Database</h2>
                             <Form.Group>
@@ -153,10 +151,10 @@ class NewDosage extends Component {
                                     required>
                                 </Form.Input>
                             </Form.Group>
-                            <Button style={{ marginBottom: '20px' }}>Add Drug</Button>
+                            <Button className="drugButton" style={{ marginBottom: '20px' }}>Add Drug</Button>
                         </form>
                     </Grid.Column>
-                    <Grid.Column width={8}>
+                    <Grid.Column computer={8} mobile={16}>
                         <form className="ui form" onSubmit={this.delDrug}>
                             <h2>Delete Drug from Database</h2>
                             <Form.Group>
@@ -171,17 +169,17 @@ class NewDosage extends Component {
                                     required
                                 />
                             </Form.Group>
-                            <Button style={{ marginBottom: '20px' }}>Delete Drug</Button>
+                            <Button className="drugButton" style={{ marginBottom: '20px' }}>Delete Drug</Button>
                         </form>
                     </Grid.Column>
                 </Grid>
-                <form className="ui form" onSubmit={this.add}>
+                </div>
+                <Form onSubmit={this.add}>
                     <h2>Add New Dosage for {this.props.animal.name}</h2>
                     <Form.Group width="equal">
                         <Form.Dropdown
                             label="Drug Name:   "
                             search
-                            style={{ width: "700px" }}
                             selection
                             options={this.state.drugList.map(drug => ({ text: drug.name, value: drug.drug_id }))}
                             name="drug_id"
@@ -194,7 +192,6 @@ class NewDosage extends Component {
                         <Form.Dropdown
                             label="Methods:   "
                             search
-                            style={{ width: "700px" }}
                             selection
                             options={this.state.methodList.map(method => ({ text: method.name, value: method.method_id }))}
                             name="method_id"
@@ -226,7 +223,6 @@ class NewDosage extends Component {
                         <Form.Dropdown
                             label="Concentration Units:   "
                             search
-                            style={{ width: 100 }}
                             selection
                             options={this.state.unitList.map(unit => ({ text: unit.name, value: unit.unit_id }))}
                             name="method_id"
@@ -239,7 +235,6 @@ class NewDosage extends Component {
                         <Form.Input
                             control={Input}
                             type='number'
-                            style={{ width: 100 }}
                             name="dose_low"
                             label="Dosage Range:   "
                             placeholder="Low"
@@ -251,7 +246,6 @@ class NewDosage extends Component {
                         <Form.Input
                             control={Input}
                             type='number'
-                            style={{ width: 100 }}
                             name="dose_high"
                             label="&nbsp;"
                             placeholder="High"
@@ -272,7 +266,6 @@ class NewDosage extends Component {
                     </Form.Group>
                     <Form.Input
                         control={Input}
-                        style={{ width: 700 }}
                         name="notes"
                         label="Notes:   "
                         placeholder="Notes"
@@ -280,7 +273,7 @@ class NewDosage extends Component {
                         onChange={(e, { value }) => this.setState({ notes: value })}
                     />
                     <button className="ui button blue">Add</button>
-                </form>
+                </Form>
             </div>
         )
     }

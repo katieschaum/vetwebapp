@@ -1,14 +1,11 @@
 import React, { useEffect } from "react";
-import { Item, Table } from "semantic-ui-react";
+import { Item, Table, List, Header, Grid } from "semantic-ui-react";
 import api from "../services/api";
 
 
 // Creates the table with the animals expected biometrics
 
 const VitalsCard = (props) => {
-    useEffect(()=>{
-        console.log(props.currentAnimal);
-    })
     // function get(){
     //     api.get('/animals', {
     //         //drug_id: 161,
@@ -37,7 +34,9 @@ const VitalsCard = (props) => {
     //     heart_rate_low, heart_rate_high, 
     //     respiratory_rate_low, respiratory_rate_high} = "5";
 
-    return(<Table>
+    return(
+        <div>
+        <Table className="vitalsTable">
         <Table.Header>
             <Table.Row>
                 <Table.HeaderCell>Temp Low</Table.HeaderCell>
@@ -72,6 +71,26 @@ const VitalsCard = (props) => {
         
         </Table.Body>
         </Table>
+
+        <div style={{justifyContent: 'center', marginBottom: '30px', marginTop: '30px'}} className="hideDesktop">
+        <Grid>
+            <Grid.Row>
+                <Grid.Column mobile={8}><Header as={'h5'}><u>Temp Low: </u>{props.currentAnimal.temperature_low}</Header></Grid.Column>
+                <Grid.Column mobile={8}><Header as={'h5'}><u>Temp High:</u> {props.currentAnimal.temperature_high}</Header></Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column mobile={8}><Header as={'h5'}><u>Heart Rate Low:</u> {props.currentAnimal.heart_rate_low}</Header></Grid.Column>
+                <Grid.Column mobile={8}><Header as={'h5'}><u>Heart Rate High:</u> {props.currentAnimal.heart_rate_high}</Header></Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column mobile={8}><Header as={'h5'}><u>Resp. Rate Low:</u> {props.currentAnimal.respiratory_rate_low}</Header></Grid.Column>
+                <Grid.Column mobile={8}><Header as={'h5'}><u>Resp. Rate High:</u> {props.currentAnimal.respiratory_rate_high}</Header></Grid.Column>
+            </Grid.Row>
+        </Grid>
+        </div>
+        
+
+        </div>
     );
 };
 

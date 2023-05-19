@@ -1,6 +1,6 @@
 import { React } from "react";
 import { Component } from "react";
-import { Form, Input } from "semantic-ui-react";
+import { Form, Input, Grid, Button } from "semantic-ui-react";
 import api from "../services/api";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
@@ -42,15 +42,14 @@ class AddAnimal extends Component {
 
     render() {
         return (
-            <div className="addAnimal" style={{display: "flex", justifyContent: "center"}}>
-                <form className="ui form" onSubmit={this.add}>
-                <h2>Add an Animal</h2>
-                <Form.Group width="equal">
+            <div className="addAnimal">
+                <Form onSubmit={this.add}>
+                <h2 className="addAnimalHeader">Add an Animal</h2>
+                <Form.Group>
                     <Form.Field
                     control={Input}
                     name="name"
                     label="Animal Name"
-                    style= {{width: "515px"}}
                     placeholder="Animal Name"
                     value={this.state.name}
                     onChange={(e) => this.setState({ name: e.target.value })}
@@ -62,7 +61,6 @@ class AddAnimal extends Component {
                     control={Input}
                     name="name"
                     label="Temperature Low"
-                    style= {{width: "250px"}}
                     placeholder="Temperature Low"
                     value={this.state.temperature_low}
                     onChange={(e) => this.setState({ temperature_low: e.target.value })}
@@ -72,7 +70,6 @@ class AddAnimal extends Component {
                     control={Input}
                     name="name"
                     label="Temperature High"
-                    style= {{width: "250px"}}
                     placeholder="Temperature High"
                     value={this.state.temperature_high}
                     onChange={(e) => this.setState({ temperature_high: e.target.value })}
@@ -84,7 +81,6 @@ class AddAnimal extends Component {
                     control={Input}
                     name="name"
                     label="Heart Rate Low"
-                    style= {{width: "250px"}}
                     placeholder="Heart Rate Low"
                     value={this.state.heart_rate_low}
                     onChange={(e) => this.setState({ heart_rate_low: e.target.value })}
@@ -94,7 +90,6 @@ class AddAnimal extends Component {
                     control={Input}
                     name="name"
                     label="Heart Rate High"
-                    style= {{width: "250px"}}
                     placeholder="Heart Rate High"
                     value={this.state.heart_rate_high}
                     onChange={(e) => this.setState({ heart_rate_high: e.target.value })}
@@ -106,7 +101,6 @@ class AddAnimal extends Component {
                     control={Input}
                     name="name"
                     label="Respiratory Rate Low"
-                    style= {{width: "250px"}}
                     placeholder="Respiratory Rate Low"
                     value={this.state.respiratory_rate_low}
                     onChange={(e) => this.setState({ respiratory_rate_low: e.target.value })}
@@ -116,15 +110,14 @@ class AddAnimal extends Component {
                     control={Input}
                     name="name"
                     label="Respiratory Rate High"
-                    style= {{width: "250px"}}
                     placeholder="Respiratory Rate High"
                     value={this.state.respiratory_rate_high}
                     onChange={(e) => this.setState({ respiratory_rate_high: e.target.value })}
                     required
                     />
                 </Form.Group>
-                <button className="ui button blue">Add</button>
-                </form>
+                <Button className="addAnimalButton" color="blue">Add</Button>
+                </Form>
             </div>
         )
     }

@@ -43,7 +43,6 @@ const DosageTable = () => {
       localStorage.setItem("currentAnimal", JSON.stringify(context.currentAnimal));
       setVitals(context.currentAnimal);
 
-      console.log("id context: "+animal_id);
     }
       
       // alert("animal_id?"+animal_id);
@@ -54,10 +53,8 @@ const DosageTable = () => {
         dosages: newDosages,
       }); 
      // setVitals(newVitals);
-      console.log("vitals list updated:",newVitals);
     }
    
-    console.log(dosages.dosages)
 
   
 
@@ -169,7 +166,7 @@ const DosageTable = () => {
       <Header></Header>
       <Button onClick={()=>navigate(-1)}>Back</Button>
       <h1>{window.location.pathname.split("/").pop()}</h1>
-      <h3>Vitals</h3>
+      <h3 className='vitalsTable'>Vitals</h3>
       <VitalsCard currentAnimal={vitals}></VitalsCard>
       <NewDosage getDosages={getDosages} animal={vitals} AnimalHandler={addDosageHandler}> </NewDosage> 
       <h2>Dosage List for {vitals.name}</h2>

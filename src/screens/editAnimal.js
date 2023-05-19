@@ -69,12 +69,12 @@ const EditAnimal = () => {
             {isLoading ? (
                 <Loader></Loader>
             ) : (
-                <div>
+                <div style={{overflow: 'hidden'}}>
 
                     <Button href='/' style={{ marginTop: '40px', marginBottom: '50px', marginLeft: '50px' }}>Back</Button>
 
                     <Grid columns={2}>
-                        <Grid.Column width={11}>
+                        <Grid.Column computer={11} mobile={16}>
                             <Header style={{ padding: '10px', paddingBottom: '20px' }} as={'h1'}>Edit Data:</Header>
                             <Form onSubmit={handleSubmit} style={{ width: '70%', justifyContent: 'center', margin: 'auto', boxShadow: '2px 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '10px', borderRadius: '5px', backgroundColor: 'whitesmoke' }}>
                                 <Header style={{ paddingTop: '10px', paddingBottom: '10px' }} as={'h2'}>{animalOptions[0].name}</Header>
@@ -93,13 +93,13 @@ const EditAnimal = () => {
                                     <Form.Input name='respiratory_rate_low' label='Respiratory Rate Low:' defaultValue={animalOptions[0].respiratory_rate_low}></Form.Input>
                                     <Form.Input name='respiratory_rate_high' label='Respiratory Rate High' defaultValue={animalOptions[0].respiratory_rate_high}></Form.Input>
                                 </Form.Group>
-                                <Form.Button style={{ marginTop: '10px', marginBottom: '10px' }} primary>Submit Changes</Form.Button>
+                                <Form.Button className='editAnimalButton' style={{ marginTop: '10px', marginBottom: '10px' }} primary>Submit Changes</Form.Button>
                             </Form>
                         </Grid.Column>
 
-                        <Grid.Column width={5}>
-                            <Header style={{ padding: '10px', paddingBottom: '20px', textAlign: 'center', marginRight: '50%' }} as={'h2'}>Curent Data:</Header>
-                            <List celled style={{ width: '50%', justifyContent: 'center', margin: 'auto', textAlign: 'center', marginRight: '50%' }}>
+                        <Grid.Column computer={5} mobile={16}>
+                            <Header className='currentDataHeader' style={{ padding: '10px', paddingBottom: '20px', textAlign: 'center', marginRight: '50%' }} as={'h2'}>Curent Data:</Header>
+                            <List className='currentDataElements' celled style={{ width: '50%', justifyContent: 'center', margin: 'auto', textAlign: 'center', marginRight: '50%' }}>
                                 <List.Item>
                                     <Icon color='blue' name='user'></Icon>
                                     <List.Header>Animal Name: </List.Header>

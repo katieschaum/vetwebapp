@@ -4,7 +4,6 @@ import { Table } from 'semantic-ui-react';
 
 // Creates the form for drug data, calling the drug card which fills in the data.
 const DosageList = (props) => {
-    console.log(props)
     const renderDosageList = props.dosages.map((dosage) => {    
         return (
             <DosageCard 
@@ -16,7 +15,7 @@ const DosageList = (props) => {
         );
     });
     return <Table striped table>
-        <Table.Header>
+        <Table.Header className="vitalsTable">
             <Table.Row>
                 <Table.HeaderCell width={2}>Drug</Table.HeaderCell>
                 <Table.HeaderCell width={1} textAlign='left'>Method</Table.HeaderCell>
