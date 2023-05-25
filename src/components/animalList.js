@@ -66,11 +66,18 @@ const DropdownAnimalSearchQuery = () => {
   }
 
   const deleteAnimal = async (animalId) => {
-    try {
-      await api.delete(`/animals/${animalId}`);
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
+    if (window.confirm(`Are you sure you want to delete animal and its dosages?`) === true) {
+      try {
+        // First get animal dosages and delete them
+        let response = await api.get(`dosages?animal_id=${animalId}`);
+        for (let i = 0; i < response.data.length; i++) {
+          await api.delete(`/dosages/${response.data[i].dosage_id}`);
+        }
+        await api.delete(`/animals/${animalId}`);
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
