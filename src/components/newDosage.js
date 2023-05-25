@@ -126,11 +126,18 @@ class NewDosage extends Component {
     // Delete a drug from the DB
     delDrug = async (e) => {
         e.preventDefault();
-        try {
-            await api.delete(`/drugs/${this.state.drug_to_delete}`);
-            window.location.reload();
-        } catch (error) {
-            console.error(error);
+        if (window.confirm("WARNING!! This will delete the DRUG and ALL of its DOSAGES!") === true) {
+            try {
+                // First get relevenat dosages and delete them.
+                let response = await api.get(`dosages?drug_id=${this.state.drug_to_delete}`);
+                for (let i = 0; i < response.data.length; i++) {
+                    await api.delete(`/dosages/${response.data[i].dosage_id}`);
+                }
+                await api.delete(`/drugs/${this.state.drug_to_delete}`);
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 

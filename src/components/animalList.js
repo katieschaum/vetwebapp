@@ -66,7 +66,7 @@ const DropdownAnimalSearchQuery = () => {
   }
 
   const deleteAnimal = async (animalId) => {
-    if (window.confirm(`Are you sure you want to delete animal and its dosages?`) === true) {
+    if (window.confirm(`Are you sure you want to delete ANIMAL and its DOSAGES?`) === true) {
       try {
         // First get animal dosages and delete them
         let response = await api.get(`dosages?animal_id=${animalId}`);
