@@ -153,7 +153,6 @@ const DosageTable = () => {
         // await api.delete("dosages", {id:id}); // like in swagger test, always showing "not found"
       };
     // const newDosageList = dosages.filter((dosage) => {
-    //   return dosage.id !== id;
     
   }
 
